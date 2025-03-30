@@ -1,1 +1,2 @@
-# IS4228-LeaseX
+# IS4228 Final Group Project : LeaseX - The Future of Decentralized Renting
+LeaseX is a next-generation decentralized rental platform powered by blockchain technology. Designed to bring clarity, security, and efficiency to the rental process, LeaseX transforms how landlords and tenants connect. From property listings and rental applications to smart contract agreements, automated payments, and conflict resolution, LeaseX streamlines every step of the rental journey. A key feature of LeaseX is its community-based dispute resolution system. Verified Real Estate Experts (Validators) can objectively assess issues and cast votes to ensure fair and transparent outcomes, eliminating bias and enhancing trust across the ecosystem.
