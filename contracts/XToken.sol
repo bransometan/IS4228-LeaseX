@@ -4,12 +4,12 @@ pragma solidity ^0.8.0;
 import "./ERC20.sol";
 
 /*
-LeaseToken contract is a contract that allows users to get LeaseToken by sending ETH to the contract address.
-LeaseToken utilises ERC20 token that is minted by the contract and can be transferred to other addresses.
-LeaseToken can be converted to ETH by calling the convertLeaseTokenToETH function.
+XToken contract is a contract that allows users to get XToken by sending ETH to the contract address.
+XToken utilises ERC20 token that is minted by the contract and can be transferred to other addresses.
+XToken can be converted to ETH by calling the convertXTokenToETH function.
 */
 
-contract LeaseToken {
+contract XToken {
 
     // ################################################### STRUCTURE & STATE VARIABLES ################################################### //
     ERC20 erc20Contract;
@@ -21,7 +21,7 @@ contract LeaseToken {
         ERC20 e = new ERC20();
         erc20Contract = e;
         owner = msg.sender;
-        supplyLimit = 1e18; // 1e18 LeaseToken supply limit
+        supplyLimit = 1e18; // 1e18 XToken supply limit
     }
     // ################################################### EVENTS ################################################### //
     event getCredit(uint256 credit);
@@ -37,56 +37,56 @@ contract LeaseToken {
 
     // ################################################### FUNCTIONS ################################################### //
     
-    // Get LeaseToken by sending ETH
-    function getLeaseToken() public payable {
-        uint256 leaseToken = msg.value / 1e16; // Get LeaseToken eligible (1e16 wei = 1 LeaseToken OR 0.01 ETH = 1 LeaseToken)
+    // Get XToken by sending ETH
+    function getXToken() public payable {
+        uint256 xToken = msg.value / 1e16; // Get XToken eligible (1e16 wei = 1 XToken OR 0.01 ETH = 1 XToken)
         require(
-            erc20Contract.totalSupply() + leaseToken < supplyLimit,
-            "LeaseToken supply is not enough"
+            erc20Contract.totalSupply() + xToken < supplyLimit,
+            "XToken supply is not enough"
         );
-        erc20Contract.mint(msg.sender, leaseToken);
-        emit getCredit(leaseToken);
+        erc20Contract.mint(msg.sender, xToken);
+        emit getCredit(xToken);
     }
 
-    // Check LeaseToken balance
-    function checkLeaseToken(address recipient) public view returns (uint256) {
-        uint256 leaseToken = erc20Contract.balanceOf(recipient);
-        return leaseToken;
+    // Check XToken balance
+    function checkXToken(address recipient) public view returns (uint256) {
+        uint256 xToken = erc20Contract.balanceOf(recipient);
+        return xToken;
     }
 
-    // Transfer LeaseToken to another address
-    function transferLeaseToken(
+    // Transfer XToken to another address
+    function transferXToken(
         address sender,
         address recipient,
-        uint256 leaseToken
+        uint256 xToken
     ) public {
-        erc20Contract.transferLT(sender, recipient, leaseToken);
-        emit transferCredit(sender, recipient, leaseToken);
+        erc20Contract.transferLT(sender, recipient, xToken);
+        emit transferCredit(sender, recipient, xToken);
     }
 
-    // Transfer LeaseToken from another address to another address
-    function transferLeaseTokenFrom(
+    // Transfer XToken from another address to another address
+    function transferXTokenFrom(
         address spender,
         address sender,
         address recipient,
-        uint256 leaseToken
+        uint256 xToken
     ) public {
-        erc20Contract.transferFromLT(spender, sender, recipient, leaseToken);
-        emit transferCreditFrom(spender, sender, recipient, leaseToken);
+        erc20Contract.transferFromLT(spender, sender, recipient, xToken);
+        emit transferCreditFrom(spender, sender, recipient, xToken);
     }
 
-    // Approve LeaseToken to be spent by another address
-    function approveLeaseToken(
+    // Approve XToken to be spent by another address
+    function approveXToken(
         address sender,
         address spender,
-        uint256 leaseToken
+        uint256 xToken
     ) public {
-        erc20Contract.approveLT(sender, spender, leaseToken);
-        emit approveCredit(sender, spender, leaseToken);
+        erc20Contract.approveLT(sender, spender, xToken);
+        emit approveCredit(sender, spender, xToken);
     }
 
-    // Check LeaseToken allowance for spender
-    function checkLeaseTokenAllowance(
+    // Check XToken allowance for spender
+    function checkXTokenAllowance(
         address _owner,
         address spender
     ) public view returns (uint256) {
@@ -94,24 +94,24 @@ contract LeaseToken {
         return allowance;
     }
 
-    // Convert LeaseToken to ETH
-    function convertLeaseTokenToETH(
+    // Convert XToken to ETH
+    function convertXTokenToETH(
         address sender,
-        uint256 leaseTokenAmount
+        uint256 XTokenAmount
     ) public {
-        require(leaseTokenAmount > 0, "Invalid amount");
+        require(XTokenAmount > 0, "Invalid amount");
         require(
-            erc20Contract.balanceOf(sender) >= leaseTokenAmount,
+            erc20Contract.balanceOf(sender) >= XTokenAmount,
             "Insufficient balance"
         );
 
-        uint256 ethAmount = leaseTokenAmount * 1e16; // 1 LeaseToken = 0.01 ETH (1e16 wei = 1 LeaseToken)
+        uint256 ethAmount = XTokenAmount * 1e16; // 1 XToken = 0.01 ETH (1e16 wei = 1 XToken)
         require(
             address(this).balance >= ethAmount,
             "Contract does not have enough Ether to send"
         );
 
-        erc20Contract.burn(sender, leaseTokenAmount);
+        erc20Contract.burn(sender, XTokenAmount);
         payable(sender).transfer(ethAmount);
         emit refundCredit(sender, ethAmount);
     }
