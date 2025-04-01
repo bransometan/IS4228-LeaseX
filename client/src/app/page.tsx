@@ -68,52 +68,49 @@ const SwapXTokensForm = () => {
   }
 
   return (
-    <Card>
+    <Card className="shadow-xl rounded-2xl">
       <CardHeader>
-        <CardTitle>Swap XToken</CardTitle>
-        <CardDescription>
-          Get XToken eligible (1e16 wei = 1 XToken OR 0.01 ETH = 1
-          XToken)
-        </CardDescription>
-        <CardDescription>
-          XTokens are required to perform actions on our site.
-        </CardDescription>
+        <CardTitle className="text-xl font-semibold">Convert ETH to XToken</CardTitle>
+        <CardDescription className="whitespace-nowrap">1 ETH = 100 XToken | Required for LeaseX usage</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="px-2 space-y-4"
+            className="space-y-4"
           >
             <FormField
               control={form.control}
               name="valueInEth"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center gap-4 mx-10">
-                    <FormLabel className="font-bold">ETH</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter ETH" {...field} />
-                    </FormControl>
-                    <FormLabel className="font-bold">XToken</FormLabel>
-                    <Input
-                      placeholder="Enter XToken"
-                      value={form.getValues().valueInEth * 100}
-                      onChange={(e) =>
-                        form.setValue(
-                          "valueInEth",
-                          parseInt(
-                            e.currentTarget.value ? e.currentTarget.value : "0"
-                          ) / 100
-                        )
-                      }
-                    />
+                  <div className="grid grid-cols-2 gap-6 items-center">
+                    <div>
+                      <FormLabel className="font-medium text-sm">ETH</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter ETH" {...field} />
+                      </FormControl>
+                    </div>
+                    <div>
+                      <FormLabel className="font-medium text-sm">XToken</FormLabel>
+                      <Input
+                        readOnly
+                        className="bg-gray-100"
+                        value={form.getValues().valueInEth * 100}
+                        onChange={(e) =>
+                          form.setValue(
+                            "valueInEth",
+                            parseInt(e.currentTarget.value || "0") / 100
+                          )
+                        }
+                      />
+                    </div>
                   </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Swap</Button>
+            <Button className="w-full mt-2" type="submit">Swap ETH ➝ XToken</Button>
           </form>
         </Form>
       </CardContent>
@@ -132,7 +129,7 @@ const SwapEthForm = () => {
   const form = useForm<z.infer<typeof ethFormSchema>>({
     resolver: zodResolver(ethFormSchema),
     defaultValues: {
-      valueInXToken: 1,
+      valueInXToken: 100,
     },
   });
 
@@ -162,49 +159,49 @@ const SwapEthForm = () => {
   }
 
   return (
-    <Card>
+    <Card className="shadow-xl rounded-2xl">
       <CardHeader>
-        <CardTitle>Swap ETH</CardTitle>
-        <CardDescription>
-          Get ETH eligible (1 XToken = 0.01 ETH)
-        </CardDescription>
-        <CardDescription>Swap back ETH from your XTokens</CardDescription>
+        <CardTitle className="text-xl font-semibold">Convert XToken to ETH</CardTitle>
+        <CardDescription className="whitespace-nowrap">100 XToken = 1 ETH | Withdraw back to ETH</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="px-2 space-y-4"
+            className="space-y-4"
           >
             <FormField
               control={form.control}
               name="valueInXToken"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center gap-4 mx-10">
-                    <FormLabel className="font-bold">XToken</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter XToken" {...field} />
-                    </FormControl>
-                    <FormLabel className="font-bold">ETH</FormLabel>
-                    <Input
-                      placeholder="Enter ETH"
-                      value={form.getValues().valueInXToken / 100}
-                      onChange={(e) =>
-                        form.setValue(
-                          "valueInXToken",
-                          parseInt(
-                            e.currentTarget.value ? e.currentTarget.value : "0"
-                          ) * 100
-                        )
-                      }
-                    />
+                  <div className="grid grid-cols-2 gap-6 items-center">
+                    <div>
+                      <FormLabel className="font-medium text-sm">XToken</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter XToken" {...field} />
+                      </FormControl>
+                    </div>
+                    <div>
+                      <FormLabel className="font-medium text-sm">ETH</FormLabel>
+                      <Input
+                        readOnly
+                        className="bg-gray-100"
+                        value={form.getValues().valueInXToken / 100}
+                        onChange={(e) =>
+                          form.setValue(
+                            "valueInXToken",
+                            parseInt(e.currentTarget.value || "0") * 100
+                          )
+                        }
+                      />
+                    </div>
                   </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Swap</Button>
+            <Button className="w-full mt-2" type="submit">Swap XToken ➝ ETH</Button>
           </form>
         </Form>
       </CardContent>
@@ -215,25 +212,24 @@ const SwapEthForm = () => {
 export default function Home() {
   const router = useRouter();
   return (
-    <main className="flex flex-col items-center justify-between">
-      <div className="space-y-10 text-center">
+    <main className="flex flex-col items-center justify-center min-h-screen px-4 py-12 bg-gray-50">
+      <div className="max-w-3xl w-full space-y-10 text-center">
         <section className="space-y-4">
-          <h1 className="text-4xl">LeaseX</h1>
-          <h2 className="text-lg">
-            Unlocking Property Lease Freedom: Empowering Decentralized Leases
-            with Blockchain
-          </h2>
+          <h1 className="text-5xl font-extrabold text-indigo-700">LeaseX</h1>
+          <p className="text-gray-600 text-lg">
+            Unlocking Property Lease Freedom: Empowering Decentralized Leases with Blockchain
+          </p>
           <SignedOut>
-            <div className="space-x-4">
+            <div className="space-x-4 mt-4">
               <SignInButton>
                 <Button>Log In</Button>
               </SignInButton>
-              <Button onClick={() => router.push("/invite")}>Sign Up</Button>
+              <Button variant="outline" onClick={() => router.push("/invite")}>Sign Up</Button>
             </div>
           </SignedOut>
         </section>
         <SignedIn>
-          <section className="space-y-4">
+          <section className="grid md:grid-cols-2 gap-8">
             <SwapXTokensForm />
             <SwapEthForm />
           </section>

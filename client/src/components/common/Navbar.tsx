@@ -52,22 +52,25 @@ export default function Navbar() {
   const role = checkUserRole(session);
 
   return (
-    <nav className="w-full fixed top-0 z-20 bg-white">
-      <div className="flex items-center justify-between p-3 px-10 ">
-        <ul className="flex m-0 p-0 overflow-hidden items-center">
+    <nav className="w-full fixed top-0 z-20 bg-white shadow-md border-b border-gray-200">
+      <div className="flex items-center justify-between px-6 py-3 max-w-screen-2xl mx-auto">
+        <ul className="flex items-center space-x-6">
           <Link href="/">
-            <li className="float-left mr-8 text-lg font-bold">LeaseX</li>
+            <li className="text-xl font-extrabold text-indigo-600 tracking-wide cursor-pointer">
+              LeaseX
+            </li>
           </Link>
           <SignedIn>
             {TABS.map((tab, i) => {
-              if (!role) return;
+              if (!role) return null;
               if (tab.roles.includes(role as UserRole)) {
                 return (
                   <Link href={tab.href} key={i}>
                     <li
                       className={cn(
-                        "float-left mr-4 px-2 rounded hover:bg-gray-200",
-                        path.includes(`${tab.href}`) && "bg-gray-200 nav-active"
+                        "text-sm font-medium px-3 py-2 rounded-md transition-all duration-200 cursor-pointer hover:bg-indigo-100 hover:text-indigo-600",
+                        path.includes(`${tab.href}`) &&
+                          "bg-indigo-100 text-indigo-600"
                       )}
                     >
                       {tab.name}
@@ -78,30 +81,34 @@ export default function Navbar() {
             })}
           </SignedIn>
         </ul>
+
         <SignedIn>
-          <div className="flex justify-between gap-4 items-center">
-            <div>
-              <p className="text-sm font-medium text-right">
-                {xTokens} XTokens
-              </p>
+          <div className="flex items-center gap-6">
+            <div className="text-right">
+              <p className="text-sm font-semibold text-gray-700">{xTokens} XTokens</p>
               {role && (
-                <p className="text-sm font-medium text-right">
+                <p className="text-xs text-gray-500">
                   {capitalizeFirstLetter(role)}
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-3">
               {wallet ? (
-                <Button disabled>{truncate(wallet, 6, 6, 6)}</Button>
+                <Button
+                  variant="outline"
+                  className="text-sm font-mono px-4 py-1"
+                  disabled
+                >
+                  {truncate(wallet, 6, 6, 6)}
+                </Button>
               ) : (
-                <Button onClick={connectWallet}>Connect wallet</Button>
+                <Button onClick={connectWallet}>Connect Wallet</Button>
               )}
               <UserButton afterSignOutUrl="/login" />
             </div>
           </div>
         </SignedIn>
       </div>
-      <hr className="border-slate-400 opacity-25" />
     </nav>
   );
 }
