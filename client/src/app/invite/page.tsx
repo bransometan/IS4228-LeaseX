@@ -27,7 +27,7 @@ import {
 import { capitalizeFirstLetter } from "@/lib/utils";
 
 const formSchema = z.object({
-  emailAddress: z.string().email(),
+  emailAddress: z.string().email("Please enter a valid email address."),
   role: z.nativeEnum(UserRole),
 });
 
@@ -43,88 +43,97 @@ export default function InviteForm() {
     },
   });
 
-  // Send the role invite
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { emailAddress, role } = values;
 
     try {
-      const roleInviteData = {
-        emailAddress,
-        role,
-      };
       const res = await fetch("/api/organizations", {
         method: "POST",
-        body: JSON.stringify(roleInviteData),
+        body: JSON.stringify({ emailAddress, role }),
       });
+
       if (res.ok) {
         router.push("/invite/success");
       } else {
         toast({
           variant: "destructive",
-          title: "Oops",
-          description: "Something went wrong!",
+          title: "Oops!",
+          description: "Something went wrong while sending the invite.",
         });
-        console.log(res.json());
+        console.log(await res.json());
       }
-    } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err) {
+      console.error(err);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not send invite. Please try again.",
+      });
     }
   };
 
   return (
-    <div className="mx-20 space-y-4">
-      <h1 className="text-2xl font-bold text-center">Role Invitation</h1>
-      <p className="text-muted-foreground text-center">
-        An email will be sent for you to enter LeaseX as the stated role
-      </p>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="emailAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter email address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="w-full max-w-md bg-white border rounded-xl shadow-lg p-6 sm:p-8 space-y-6">
+        <div className="text-center space-y-1">
+          <h1 className="text-2xl font-bold text-indigo-700">Send Role Invite</h1>
+          <p className="text-sm text-gray-500">
+            Invite someone to join LeaseX with a specific role.
+          </p>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="emailAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
+                    <Input placeholder="e.g. user@example.com" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {Object.values(UserRole).map((role, i) => {
-                      if (role === UserRole.Admin) return;
-                      return (
-                        <SelectItem key={i} value={role}>
-                          {capitalizeFirstLetter(role)}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
                   <FormMessage />
-                </Select>
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Confirm</Button>
-        </form>
-      </Form>
-    </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(UserRole).map((role, i) =>
+                        role === UserRole.Admin ? null : (
+                          <SelectItem key={i} value={role}>
+                            {capitalizeFirstLetter(role)}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full mt-2">
+              Send Invite
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </main>
   );
 }
